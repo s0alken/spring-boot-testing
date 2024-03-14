@@ -4,7 +4,7 @@ import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
 import net.javaguides.springboot.service.Impl.EmployeeServiceImpl;
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class EmployeeServiceTests {
         Employee savedEmployee = employeeService.saveEmployee(employee);
 
         // then - verify the output
-        Assertions.assertThat(savedEmployee).isNotNull();
+        assertThat(savedEmployee).isNotNull();
     }
 
     // JUnit test for saveEmployee method
@@ -99,8 +99,8 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then - verify the output
-        Assertions.assertThat(employeeList).isNotNull();
-        Assertions.assertThat(employeeList.size()).isEqualTo(2);
+        assertThat(employeeList).isNotNull();
+        assertThat(employeeList.size()).isEqualTo(2);
     }
 
     // JUnit test for getAllEmployees method (negative scenario)
@@ -115,7 +115,21 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then - verify the output
-        Assertions.assertThat(employeeList).isEmpty();
-        Assertions.assertThat(employeeList.size()).isEqualTo(0);
+        assertThat(employeeList).isEmpty();
+        assertThat(employeeList.size()).isEqualTo(0);
+    }
+
+    // JUnit test for getEmployeeById method
+    @DisplayName("JUnit test for getEmployeeById method")
+    @Test
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject(){
+        // given - precondition or setup
+        given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
+
+        // when - action or the behavior that we are going to test
+        Employee savedEmployee = employeeService.getEmployeeById(employee.getId()).orElse(null);
+
+        // then - verify the output
+        assertThat(savedEmployee).isNotNull();
     }
 }
