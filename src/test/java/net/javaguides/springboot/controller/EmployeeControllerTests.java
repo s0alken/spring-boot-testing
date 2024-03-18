@@ -114,26 +114,42 @@ public class EmployeeControllerTests {
 
     }
 
-    // negative scenario - invalid employee id
-    // JUnit test for GET employee by id REST API
+    // JUnit test for update employee REST API
     @Test
-    public void givenInvalidEmployeeId_whenGetEmployeeById_thenReturnEmpty() throws Exception {
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdateEmployeeObject() throws Exception {
         // given - precondition or setup
         long employeeId = 1L;
-        Employee employee = Employee.builder()
+        Employee savedEmployee = Employee.builder()
                 .firstName("Ramesh")
-                .lastName("Fadare")
+                .lastName("Fadatare")
                 .email("ramesh@gmail.com")
                 .build();
 
-        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
+        Employee updatedEmployee = Employee.builder()
+                .firstName("Ram")
+                .lastName("Jadhav")
+                .email("ramh@gmail.com")
+                .build();
+
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.of(savedEmployee));
+        given(employeeService.updateEmployee(any(Employee.class)))
+                .willAnswer((invocation)->invocation.getArgument(0));
+
 
         // when - action or the behavior that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedEmployee)));
 
         // then - verify the output
-        response.andExpect(status().isNotFound())
-                .andDo(print());
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.firstName",
+                        is(updatedEmployee.getFirstName())))
+                .andExpect(jsonPath("$.lastName",
+                        is(updatedEmployee.getLastName())))
+                .andExpect(jsonPath("$.email",
+                        is(updatedEmployee.getEmail())));
 
     }
 }
