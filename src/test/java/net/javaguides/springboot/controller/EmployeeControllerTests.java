@@ -3,7 +3,6 @@ package net.javaguides.springboot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.service.EmployeeService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,7 +39,7 @@ public class EmployeeControllerTests {
         // given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("Ramesh")
-                .lastName("Fadare")
+                .lastName("Fadatare")
                 .email("ramesh@gmail.com")
                 .build();
 
@@ -70,7 +69,7 @@ public class EmployeeControllerTests {
 
         // given - precondition or setup
         List<Employee> listOfEmployees = new ArrayList<>();
-        listOfEmployees.add(Employee.builder().firstName("Ramesh").lastName("Fadare").email("ramesh@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Ramesh").lastName("Fadatare").email("ramesh@gmail.com").build());
         listOfEmployees.add(Employee.builder().firstName("Tony").lastName("Montana").email("hannah@gmail.com").build());
 
         given(employeeService.getAllEmployees()).willReturn(listOfEmployees);
@@ -93,7 +92,7 @@ public class EmployeeControllerTests {
         long employeeId = 1L;
         Employee employee = Employee.builder()
                 .firstName("Ramesh")
-                .lastName("Fadare")
+                .lastName("Fadatare")
                 .email("ramesh@gmail.com")
                 .build();
 
@@ -206,5 +205,20 @@ public class EmployeeControllerTests {
         response.andExpect(status().isNotFound())
                 .andDo(print());
 
+    }
+
+    // JUnit test for delete employee REST API
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenReturn200() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+        willDoNothing().given(employeeService).deleteEmployee(employeeId);
+
+        // when - action or the behavior that we are going to test
+        ResultActions response = mockMvc.perform(delete("/api/employees/{id}", employeeId));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print());
     }
 }
